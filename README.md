@@ -5,16 +5,18 @@
 ### 실행 방법
 
 ```
-python main.py --keyword KEYWORD --path PATH
+python main.py --keyword KEYWORD --path PATH --schedule SCHEDULE(Optional)
 ```
 
-- 실행 시 `keyword`, `path` 두 가지 arguments 전달이 필요
+- 실행 시 `keyword`, `path`, `schedule`(optional) 세 가지 arguments 전달이 필요
 - `keyword`: 검색 단어
 - `path`: 엑셀파일을 저장할 디렉토리 path (path 끝에 \\를 필수로 붙여줘야 한다)
+- `schedule`: 매일 프로그램을 실행할 시간을 00:00(시:분) 형태로 전달. Ex) 08:00  
+  인자를 전달하지 않을 시 한번만 실행하고 종료
 
 ```
 Example)
-python main.py --keyword 관련주 --path C:\\Users\\My\\Desktop\\
+python main.py --keyword 관련주 --path C:\\Users\\My\\Desktop\\ --schedule 08:00
 ```
 
 ### 설치해야 할 패키지
@@ -25,6 +27,7 @@ pip install requests
 pip install selenium
 pip install openpyxl
 pip install pandas
+pip install schedule
 ```
 
 ### 추가 설정해야할 부분
