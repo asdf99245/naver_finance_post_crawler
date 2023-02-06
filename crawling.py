@@ -110,4 +110,3 @@ def crawling_all(keyword, path):
                 print('====================== 크롤링 종료 ======================')
 
     generate_excel(result_df, path)
-    # print(result_df)
