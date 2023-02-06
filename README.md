@@ -1,6 +1,6 @@
 ## 네이버 증권 종목토론실 crawler 
 
-네이버 증권 전 종목에서 특정 keyword가 포함되는 게시글의 종목명, 날짜, 제목, 링크를 크롤링하는 프로그램
+네이버 증권 전 종목에서 특정 keyword가 포함되는 게시글의 종목명, 날짜, 제목, 링크를 크롤링해서 엑셀파일로 저장하는 프로그램
 
 ### 실행 방법
 
@@ -10,7 +10,7 @@ python main.py --keyword KEYWORD --path PATH
 
 - 실행 시 `keyword`, `path` 두 가지 arguments 전달이 필요
 - `keyword`: 검색 단어
-- `path`: 저장할 디렉토리 path (path 끝에 \\를 필수로 붙여줘야 한다)
+- `path`: 엑셀파일을 저장할 디렉토리 path (path 끝에 \\를 필수로 붙여줘야 한다)
 
 ```
 Example)
