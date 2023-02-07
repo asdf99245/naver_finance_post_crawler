@@ -23,6 +23,12 @@ TIME_LIMIT = 3
 headers = {'User-Agent': user_agent}
 
 
+def get_page_array(pages):
+    page_nums = list(map(lambda ele: ele.text.replace('\n', '').replace('\t', ''), pages))
+    page_nums = list(filter(lambda ele: str.isdigit(ele), page_nums))
+    return page_nums
+
+
 def generate_excel(df, path):
     date_string = datetime.today().strftime("%Y%m%d_%H_%M_%S")
     df.to_excel(excel_writer=path + date_string + ".xlsx", index=False)
@@ -51,10 +57,9 @@ def crawler(name, code, keyword):
     search_url = driver.current_url
 
     driver.close()
-    page = 0
-    while True:
-        page += 1
 
+    page = 1
+    while True:
         url = search_url + '&page=%s' % (str(page))
 
         html = requests.get(url, headers=headers).content
@@ -84,20 +89,41 @@ def crawler(name, code, keyword):
         if not flag:
             break
 
+        paigination = soup.find('table', {'class': 'Nnavi'})
+        pages = paigination.select('tbody > tr > td')
+        current_page = paigination.select_one('tbody > tr > td.on').get_text()
+        page_nums = get_page_array(pages)
+        next_page_btn = paigination.select_one('tbody > tr > td.pgR')
+
+        mod = int(current_page) % 10
+        sliced_page = page_nums[0:10]
+
+        if mod != 0 and mod < len(sliced_page):
+            page += 1
+        else:
+            if len(sliced_page) < 10:
+                break
+
+        if mod == 0:
+            if next_page_btn is None:
+                break
+            else:
+                page += 1
+
     return result_df
 
 
 def crawling_all(keyword, path):
     result_df = pd.DataFrame([])
 
-    for page in range(1, 41):
+    for page in range(1, 2):
         url = 'https://finance.naver.com/sise/sise_market_sum.naver?sosok=0&page=%s' % (str(page))
         html = requests.get(url, headers=headers).content
         soup = BeautifulSoup(html.decode('euc-kr', 'replace'), 'html.parser')
         table = soup.find('table', {'class': 'type_2'})
         rows = table.select('tbody > tr')
 
-        for i in range(0, len(rows)):
+        for i in range(0, 2):
             td = rows[i].select('td.center > a')
             if len(td) > 0:
                 title = rows[i].select('td > a')[0].text
