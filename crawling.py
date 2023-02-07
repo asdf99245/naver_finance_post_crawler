@@ -116,14 +116,14 @@ def crawler(name, code, keyword):
 def crawling_all(keyword, path):
     result_df = pd.DataFrame([])
 
-    for page in range(1, 2):
+    for page in range(1, 41):
         url = 'https://finance.naver.com/sise/sise_market_sum.naver?sosok=0&page=%s' % (str(page))
         html = requests.get(url, headers=headers).content
         soup = BeautifulSoup(html.decode('euc-kr', 'replace'), 'html.parser')
         table = soup.find('table', {'class': 'type_2'})
         rows = table.select('tbody > tr')
 
-        for i in range(0, 2):
+        for i in range(0, len(rows)):
             td = rows[i].select('td.center > a')
             if len(td) > 0:
                 title = rows[i].select('td > a')[0].text
