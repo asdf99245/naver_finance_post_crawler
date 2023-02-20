@@ -19,7 +19,7 @@ options.add_argument("lang=ko_KR")
 options.add_argument('--blink-settings=imagesEnabled=false')
 
 now = datetime.now()
-TIME_LIMIT = 3
+TIME_LIMIT = 1
 headers = {'User-Agent': user_agent}
 
 
@@ -29,7 +29,12 @@ def get_page_array(pages):
     return page_nums
 
 
+def make_hyperlink(value):
+    return '=HYPERLINK("%s", "%s")' % (value.format(value), value)
+
+
 def generate_excel(df, path):
+    df['링크'] = df['링크'].apply(lambda x: make_hyperlink(x))
     date_string = datetime.today().strftime("%Y%m%d_%H_%M_%S")
     df.to_excel(excel_writer=path + date_string + ".xlsx", index=False)
 
@@ -75,7 +80,7 @@ def crawler(name, code, keyword):
 
                 date = rows[i].select('td > span')[0].text
                 title = rows[i].select('td.title > a')[0]['title']
-                link = rows[i].select('td.title > a')[0]['href']
+                link = 'https://finance.naver.com' + rows[i].select('td.title > a')[0]['href']
 
                 if keyword not in title:
                     continue
@@ -116,14 +121,14 @@ def crawler(name, code, keyword):
 def crawling_all(keyword, path):
     result_df = pd.DataFrame([])
 
-    for page in range(1, 41):
+    for page in range(1, 2):
         url = 'https://finance.naver.com/sise/sise_market_sum.naver?sosok=0&page=%s' % (str(page))
         html = requests.get(url, headers=headers).content
         soup = BeautifulSoup(html.decode('euc-kr', 'replace'), 'html.parser')
         table = soup.find('table', {'class': 'type_2'})
         rows = table.select('tbody > tr')
 
-        for i in range(0, len(rows)):
+        for i in range(0, 2):
             td = rows[i].select('td.center > a')
             if len(td) > 0:
                 title = rows[i].select('td > a')[0].text
